@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2012-2016 Adobe Systems Incorporated. All rights reserved.
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+    <!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
+    <!-- Good default declaration:
+    * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+    * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+    * Disables use of eval() and inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+        * Enable inline JS: add 'unsafe-inline' to default-src
+        * Enable eval(): add 'unsafe-eval' to default-src
+    * Create your own at http://cspisawesome.com
+    -->
+    <meta http-equiv="Content-Security-Policy" content="
+    default-src *; 
+    style-src * 'unsafe-inline'; 
+    script-src * 'unsafe-inline'; 
+    media-src *; img-src * data:; 
+" />
+    <link rel="stylesheet" type="text/css" href="css/index.css" />
+    <link rel="stylesheet" href="js/jquery.mobile-1.4.5.min.css" />
+    <script src="js/jquery-1.11.1.min.js"></script>
+    <script src="js/jquery.mobile-1.4.5.min.js"></script>
+    <script type="text/javascript" src="js/laskuri.js"></script>
+
+
+    <title>Nikotiinilaskuri</title>
+
+
+
+</head>
+
+<body>
+    <div id="header" data-role="header" data-position="fixed">
+        <h1>
+            <b>Nikotiinilaskuri</b>
+        </h1>
+        <h2>
+
+        </h2>
+
+        <div data-role="navbar" id="navi">
+            <ul>
+                <li>
+                    <a href="#laskurisivu" class="ui-btn ui-icon-edit ui-btn-icon-top  ui-mini">Laskuri</a>
+                </li>
+                <li>
+                    <a href="#reseptisivu" class="ui-btn ui-icon-check ui-btn-icon-top ui-mini">Reseptit</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /header -->
+
+
+    <div data-role="footer" data-theme="b" data-position="fixed">
+        <h4>Mobiiliohjelmointi</h4>
+    </div>
+    <!-- /footer -->
+
+
+
+    <div data-role="page" id="laskurisivu" data-title="Laskuri">
+        <div role="main" class="ui-content ui-body-a">
+            <p></p>
+            <div class="vasen">
+                <form id="laskinform">
+                    <label for="neste">Syötä haluamasi nesteen määrä millilitroina: </label>
+                    <input type="text" name="neste" id="neste" />
+                    <label for="nikotiinipitoisuus">Syötä nikotiinipitoisuus prosentteina: </label>
+                    <input type="text" name="nikotiinipitoisuus" id="nikotiinipitoisuus" />
+                    <label for="tiivisteenmaara">Syötä tiivisteen määrä prosentteina: </label>
+                    <input type="text" name="tiivisteenmaara" id="tiivisteenmaara" />
+
+                    <button type="submit" id="print">Laske</button>
+                    <button id="tallenna">Tallenna</button>
+                </form>
+            </div>
+
+
+            <div class="oikea">
+                <div style="height: 15px; margin-top: 2px;">
+                    <p style="display: none; margin: 0;" class="ilmoitus">Resepti tallennettu!</p>
+                </div>
+                <p class="info">
+                    0.00ml PG/VG nestettä
+                    <br /> 0.00ml Nikotiinia
+                    <br /> 0.00ml Tiivistettä
+                </p>
+            </div>
+
+        </div>
+        <!-- /content -->
+    </div>
+    <!-- page -->
+
+    <div data-role="page" id="reseptisivu" data-title="Reseptit">
+
+        <div role="main" class="ui-content ui-body-a">
+            <ul data-role="listview" id="list"></ul>
+
+
+
+        </div>
+        <!-- /content -->
+
+    </div>
+    <!-- /page -->
+
+
+    <!-- TO DO -->
+    <!--
+            Resepti sivu jossa pystyy tallentamaan ja muokkaamaan reseptejä
+        -->
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+    <script type="text/javascript">
+
+        $(document).one("pagebeforecreate", function () {
+
+            $("[data-role='header']").enhanceWithin().toolbar(); // Koska on sisältöä
+            $("[data-role='footer']").toolbar();  // WP ei osaa asettaa oikein
+
+            $("#popupMenu").enhanceWithin().popup(); // Koska on sisältöä
+        });
+
+
+        $(document).on("pagecreate", function () {
+
+            $(document).on("pagecontainerchange", function () {
+                navi();
+            });
+
+            function navi() {
+                // attribuutti data-title
+                var current = $(".ui-page-active").jqmData("title");
+
+                $("[data-role='header'] h2").text(current);
+
+                $("[data-role='navbar'] a.ui-btn-active").removeClass("ui-btn-active");
+
+                $("[data-role='navbar'] a").each(function () {
+                    if ($(this).text() === current) {
+                        $(this).addClass("ui-btn-active");
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

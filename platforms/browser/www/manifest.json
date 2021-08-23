@@ -1,0 +1,11 @@
+{
+  "background_color": "#FFF",
+  "display": "standalone",
+  "name": "vapelaskuri",
+  "short_name": "vapelaskuri",
+  "version": "com.phonegap.vapelaskuri",
+  "description": "Laske määrät vape nesteille.",
+  "author": "PhoneGap Team",
+  "icons": [],
+  "start_url": "index.html"
+}
