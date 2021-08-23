@@ -1,1 +1,3 @@
 Vapelaskuri
+
+Laskee nikotiininesteen määrän
